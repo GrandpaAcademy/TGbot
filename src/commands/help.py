@@ -90,7 +90,7 @@ async def help_command(bot, event):
         categories[category].append(help_info)
 
     # Build help text
-    text = "<b>🤖 KOMI HUB 2 - Commands</b>\n\n"
+    text = "<b>🤖 Grandpa™ ORG - Commands</b>\n\n"
 
     # Category icons
     category_icons = {

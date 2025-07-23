@@ -1,6 +1,6 @@
 """
 Example Commands - Template for creating new commands
-This file shows the simple syntax structure for KOMI HUB 2
+This file shows the simple syntax structure for Grandpa™ ORG
 """
 
 from core import keyboard, is_admin, is_banned

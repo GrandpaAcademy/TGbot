@@ -39,7 +39,7 @@ def register_events(dp):
     async def about_bot_callback(bot_instance, callback):
         """About bot callback"""
         about_text = """
-<b>🤖 KOMI HUB 2</b>
+<b>🤖 Grandpa™ ORG</b>
 
 <b>Version:</b> 3.0.0
 <b>Framework:</b> aiogram 3.x (simple syntax)
@@ -70,7 +70,7 @@ GrandpaAcademy Team
     async def help_menu_callback(bot_instance, callback):
         """Help menu callback"""
         help_text = """
-<b>🤖 KOMI HUB 2 - Command List</b>
+<b>🤖 Grandpa™ ORG - Command List</b>
 
 <b>📋 Available Commands:</b>
 • /start - Welcome message
@@ -101,7 +101,7 @@ GrandpaAcademy Team
         user_name = user.first_name if user else "User"
         
         welcome_text = f"""
-🤖 <b>Welcome to KOMI HUB 2, {user_name}!</b>
+🤖 <b>Welcome to Grandpa™ ORG, {user_name}!</b>
 
 I'm your friendly assistant with clean, simple code!
 
@@ -118,7 +118,7 @@ I'm your friendly assistant with clean, simple code!
 • Easy to extend
 • Modern aiogram backend
 
-Thanks for using KOMI HUB 2! 🚀
+Thanks for using Grandpa™ ORG! 🚀
         """
         
         buttons = [

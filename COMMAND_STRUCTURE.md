@@ -115,7 +115,7 @@ def register(handler):
 ## 📊 Bot Status
 
 ```
-🤖 Bot Name: KOMI HUB 2
+🤖 Bot Name: Grandpa™ ORG
 ✅ SimpleBot initialized
 ✅ Commands loaded: 5 modules
 ✅ Total commands: 15+ commands

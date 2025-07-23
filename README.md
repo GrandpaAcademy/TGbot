@@ -117,7 +117,7 @@ Edit `config.json`:
 ```json
 {
     "token": "YOUR_BOT_TOKEN_HERE",
-    "bot_name": "KOMI HUB 2",
+    "bot_name": "Grandpa™ ORG",
     "admins": [1234567890],
     "features": {
         "welcome_messages": true,

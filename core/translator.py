@@ -106,7 +106,27 @@ class SimpleBot:
             logger.info(f"Event '{event_type}' registered")
             return func
         return decorator
-    
+
+    def message(self, func):
+        """Decorator to register message handlers easily"""
+        async def handler(message: Message):
+            # Add user to database
+            user = message.from_user
+            if user:
+                db.add_user(user.id, user.username, user.first_name, user.last_name)
+
+            # Check if user is banned
+            if is_banned(user.id):
+                return
+
+            # Call the handler function
+            await func(message)
+
+        # Register with dispatcher
+        self.dp.message()(handler)
+        logger.info("Message handler registered")
+        return func
+
     async def send_message(self, chat_id: int, text: str, reply_markup=None):
         """Send message easily"""
         return await self.bot.send_message(chat_id, text, reply_markup=reply_markup)
