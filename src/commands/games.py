@@ -194,6 +194,233 @@ async def ttt_command(bot, event):
         parse_mode='HTML'
     )
 
+def create_guess_game_image(attempts, hints, target_range=(1, 100), game_over=False, won=False):
+    """Create a visual number guessing game board"""
+    width, height = 800, 600
+
+    # Colors
+    bg_color = (30, 30, 40)
+    header_color = (100, 150, 255)
+    text_color = (255, 255, 255)
+    hint_color = (255, 200, 100)
+    success_color = (100, 255, 100)
+    fail_color = (255, 100, 100)
+
+    # Create image
+    img = Image.new('RGB', (width, height), bg_color)
+    draw = ImageDraw.Draw(img)
+
+    # Try to load fonts
+    try:
+        title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 32)
+        subtitle_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
+        text_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
+        hint_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 20)
+    except:
+        title_font = ImageFont.load_default()
+        subtitle_font = ImageFont.load_default()
+        text_font = ImageFont.load_default()
+        hint_font = ImageFont.load_default()
+
+    # Header
+    draw.rectangle([0, 0, width, 80], fill=header_color)
+    draw.text((width//2 - 150, 25), "🎯 Number Guessing Game", font=title_font, fill=(255, 255, 255))
+
+    # Game info
+    y_pos = 100
+    range_text = f"🎲 Range: {target_range[0]} - {target_range[1]}"
+    draw.text((50, y_pos), range_text, font=subtitle_font, fill=text_color)
+
+    attempts_text = f"🎯 Attempts: {len(attempts)}/10"
+    draw.text((width - 200, y_pos), attempts_text, font=subtitle_font, fill=text_color)
+
+    # Attempts history
+    y_pos += 60
+    draw.text((50, y_pos), "📝 Your Attempts:", font=subtitle_font, fill=text_color)
+
+    y_pos += 40
+    for i, (guess, hint) in enumerate(zip(attempts, hints)):
+        if i >= 8:  # Limit display to 8 attempts
+            break
+
+        attempt_text = f"{i+1}. {guess}"
+        hint_text = hint
+
+        # Color based on hint
+        if "correct" in hint.lower() or "won" in hint.lower():
+            color = success_color
+        elif "higher" in hint.lower() or "lower" in hint.lower():
+            color = hint_color
+        else:
+            color = text_color
+
+        draw.text((70, y_pos), attempt_text, font=text_font, fill=color)
+        draw.text((150, y_pos), f"→ {hint_text}", font=hint_font, fill=color)
+        y_pos += 30
+
+    # Game status
+    if game_over:
+        y_pos += 20
+        if won:
+            status_text = "🎉 Congratulations! You won!"
+            status_color = success_color
+        else:
+            status_text = "💔 Game Over! Better luck next time!"
+            status_color = fail_color
+
+        draw.text((50, y_pos), status_text, font=subtitle_font, fill=status_color)
+    else:
+        y_pos += 20
+        status_text = "🤔 Keep guessing! You can do it!"
+        draw.text((50, y_pos), status_text, font=subtitle_font, fill=hint_color)
+
+    # Instructions
+    y_pos = height - 100
+    draw.rectangle([0, y_pos - 10, width, height], fill=(20, 20, 30))
+    draw.text((50, y_pos), "💡 Instructions:", font=subtitle_font, fill=text_color)
+    draw.text((50, y_pos + 30), "• Type a number to make your guess", font=text_font, fill=text_color)
+    draw.text((50, y_pos + 50), "• You have 10 attempts to find the number", font=text_font, fill=text_color)
+
+    return img
+
+async def guess_command(bot, event):
+    """Start a number guessing game"""
+    user = event.user
+    chat_id = event.chat.id
+
+    # Initialize new game
+    game_id = f"guess_{chat_id}_{user.id}"
+    target_number = random.randint(1, 100)
+
+    active_games[game_id] = {
+        'type': 'guess',
+        'target': target_number,
+        'attempts': [],
+        'hints': [],
+        'user_id': user.id,
+        'chat_id': chat_id,
+        'max_attempts': 10
+    }
+
+    # Create game image
+    img = create_guess_game_image([], [], (1, 100))
+
+    # Convert to bytes
+    bio = io.BytesIO()
+    img.save(bio, format='PNG')
+    bio.seek(0)
+
+    caption = f"""
+🎯 <b>Number Guessing Game Started!</b>
+
+<b>Player:</b> {user.first_name}
+<b>Range:</b> 1 - 100
+<b>Attempts:</b> 10
+
+I'm thinking of a number between 1 and 100.
+Can you guess what it is?
+
+<b>How to play:</b>
+• Just type any number between 1-100
+• I'll tell you if it's higher or lower
+• You have 10 attempts to win!
+
+<i>Good luck! 🍀</i>
+    """
+
+    # Send game image
+    await bot.bot.send_photo(
+        chat_id,
+        bio,
+        caption=caption.strip(),
+        parse_mode='HTML'
+    )
+
+async def rock_paper_scissors_command(bot, event):
+    """Play Rock Paper Scissors with visual results"""
+    user = event.user
+
+    # Create RPS game image
+    width, height = 600, 400
+    bg_color = (45, 45, 60)
+
+    img = Image.new('RGB', (width, height), bg_color)
+    draw = ImageDraw.Draw(img)
+
+    # Try to load fonts
+    try:
+        title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 28)
+        text_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
+    except:
+        title_font = ImageFont.load_default()
+        text_font = ImageFont.load_default()
+
+    # Header
+    draw.rectangle([0, 0, width, 60], fill=(100, 150, 255))
+    draw.text((width//2 - 120, 20), "✂️ Rock Paper Scissors", font=title_font, fill=(255, 255, 255))
+
+    # Instructions
+    y_pos = 100
+    draw.text((50, y_pos), f"🎮 Player: {user.first_name}", font=title_font, fill=(255, 255, 255))
+    y_pos += 50
+    draw.text((50, y_pos), "Choose your move:", font=text_font, fill=(200, 200, 200))
+
+    # Choices display
+    y_pos += 60
+    choices = [
+        ("🪨", "Rock", "Strong against Scissors"),
+        ("📄", "Paper", "Strong against Rock"),
+        ("✂️", "Scissors", "Strong against Paper")
+    ]
+
+    for emoji, name, desc in choices:
+        draw.text((50, y_pos), f"{emoji} {name}", font=title_font, fill=(255, 255, 255))
+        draw.text((200, y_pos + 5), f"- {desc}", font=text_font, fill=(150, 150, 150))
+        y_pos += 40
+
+    # Convert to bytes
+    bio = io.BytesIO()
+    img.save(bio, format='PNG')
+    bio.seek(0)
+
+    # Create buttons
+    buttons = [
+        [
+            {"text": "🪨 Rock", "callback_data": f"rps_{user.id}_rock"},
+            {"text": "📄 Paper", "callback_data": f"rps_{user.id}_paper"},
+            {"text": "✂️ Scissors", "callback_data": f"rps_{user.id}_scissors"}
+        ],
+        [{"text": "🔄 New Game", "callback_data": f"rps_new_{user.id}"}]
+    ]
+
+    kb = keyboard(buttons)
+
+    caption = f"""
+✂️ <b>Rock Paper Scissors</b>
+
+<b>Player:</b> {user.first_name}
+<b>Opponent:</b> AI Bot
+
+Choose your move and let's see who wins!
+
+<b>Rules:</b>
+• Rock beats Scissors
+• Paper beats Rock
+• Scissors beats Paper
+
+<i>May the best player win! 🏆</i>
+    """
+
+    await bot.bot.send_photo(
+        event.chat.id,
+        bio,
+        caption=caption.strip(),
+        reply_markup=kb,
+        parse_mode='HTML'
+    )
+
 def register(handler):
     handler.add_command("ttt", ttt_command, help())
     handler.add_command("tictactoe", ttt_command, {"description": "Play tic-tac-toe game"})
+    handler.add_command("guess", guess_command, {"description": "Number guessing game"})
+    handler.add_command("rps", rock_paper_scissors_command, {"description": "Rock Paper Scissors game"})

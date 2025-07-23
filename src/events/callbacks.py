@@ -365,3 +365,146 @@ Thanks for joining our community! 🎉
                         del active_games[game_id]
 
         await callback.answer()
+
+    @bot.callback("rps_")
+    async def rps_game_callback(bot_instance, callback):
+        """Handle Rock Paper Scissors game"""
+        data = callback.data
+
+        if data.startswith("rps_new_"):
+            # New game - just show the same interface
+            user_id = int(data.replace("rps_new_", ""))
+
+            # Create new RPS image (same as initial)
+            from src.commands.games import rock_paper_scissors_command
+            # Recreate the game interface
+            await callback.answer("🔄 New game ready!")
+            return
+
+        elif "_" in data and len(data.split("_")) >= 3:
+            # Game move
+            parts = data.split("_")
+            user_id = int(parts[1])
+            user_choice = parts[2]
+
+            if callback.from_user.id != user_id:
+                await callback.answer("❌ This is not your game!")
+                return
+
+            # AI choice
+            ai_choices = ["rock", "paper", "scissors"]
+            ai_choice = random.choice(ai_choices)
+
+            # Determine winner
+            def get_winner(p1, p2):
+                if p1 == p2:
+                    return "tie"
+                elif (p1 == "rock" and p2 == "scissors") or \
+                     (p1 == "paper" and p2 == "rock") or \
+                     (p1 == "scissors" and p2 == "paper"):
+                    return "player"
+                else:
+                    return "ai"
+
+            result = get_winner(user_choice, ai_choice)
+
+            # Create result image
+            width, height = 600, 500
+            bg_color = (45, 45, 60)
+
+            img = Image.new('RGB', (width, height), bg_color)
+            draw = ImageDraw.Draw(img)
+
+            # Try to load fonts
+            try:
+                title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 28)
+                subtitle_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 22)
+                text_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
+            except:
+                title_font = ImageFont.load_default()
+                subtitle_font = ImageFont.load_default()
+                text_font = ImageFont.load_default()
+
+            # Header
+            if result == "player":
+                header_color = (100, 255, 100)
+                result_text = "🎉 You Win!"
+            elif result == "ai":
+                header_color = (255, 100, 100)
+                result_text = "🤖 AI Wins!"
+            else:
+                header_color = (255, 200, 100)
+                result_text = "🤝 It's a Tie!"
+
+            draw.rectangle([0, 0, width, 80], fill=header_color)
+            draw.text((width//2 - 80, 25), result_text, font=title_font, fill=(255, 255, 255))
+
+            # Choices display
+            choice_emojis = {"rock": "🪨", "paper": "📄", "scissors": "✂️"}
+            choice_names = {"rock": "Rock", "paper": "Paper", "scissors": "Scissors"}
+
+            y_pos = 120
+            draw.text((50, y_pos), f"👤 {callback.from_user.first_name}:", font=subtitle_font, fill=(255, 255, 255))
+            draw.text((50, y_pos + 40), f"{choice_emojis[user_choice]} {choice_names[user_choice]}", font=title_font, fill=(100, 150, 255))
+
+            draw.text((350, y_pos), "🤖 AI Bot:", font=subtitle_font, fill=(255, 255, 255))
+            draw.text((350, y_pos + 40), f"{choice_emojis[ai_choice]} {choice_names[ai_choice]}", font=title_font, fill=(255, 100, 100))
+
+            # VS
+            draw.text((width//2 - 20, y_pos + 40), "VS", font=subtitle_font, fill=(255, 255, 255))
+
+            # Result explanation
+            y_pos += 120
+            if result == "tie":
+                explanation = "Both players chose the same!"
+            elif result == "player":
+                explanation = f"{choice_names[user_choice]} beats {choice_names[ai_choice]}!"
+            else:
+                explanation = f"{choice_names[ai_choice]} beats {choice_names[user_choice]}!"
+
+            draw.text((50, y_pos), explanation, font=text_font, fill=(200, 200, 200))
+
+            # Score suggestion
+            y_pos += 50
+            draw.text((50, y_pos), "🏆 Want to play again?", font=subtitle_font, fill=(255, 255, 255))
+
+            # Convert to bytes
+            bio = io.BytesIO()
+            img.save(bio, format='PNG')
+            bio.seek(0)
+
+            # Create buttons for new game
+            buttons = [
+                [
+                    {"text": "🪨 Rock", "callback_data": f"rps_{user_id}_rock"},
+                    {"text": "📄 Paper", "callback_data": f"rps_{user_id}_paper"},
+                    {"text": "✂️ Scissors", "callback_data": f"rps_{user_id}_scissors"}
+                ],
+                [{"text": "🔄 New Game", "callback_data": f"rps_new_{user_id}"}]
+            ]
+
+            kb = keyboard(buttons)
+
+            # Update message with result
+            await bot_instance.bot.edit_message_media(
+                chat_id=callback.message.chat.id,
+                message_id=callback.message.message_id,
+                media=callback.message.photo[-1]
+            )
+
+            caption = f"""
+✂️ <b>Rock Paper Scissors - Result</b>
+
+<b>{result_text}</b>
+
+<b>Your choice:</b> {choice_emojis[user_choice]} {choice_names[user_choice]}
+<b>AI choice:</b> {choice_emojis[ai_choice]} {choice_names[ai_choice]}
+
+{explanation}
+
+<i>Play again? 🎮</i>
+            """
+
+            await callback.message.edit_caption(caption.strip(), reply_markup=kb)
+
+        await callback.answer()
