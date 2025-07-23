@@ -115,6 +115,30 @@ def load_events(dp):
             except Exception as e:
                 logging.error(f"Error loading events from {filename}: {e}")
 
+    # Register member events manually
+    try:
+        from src.events.member_events import handle_new_member, handle_left_member
+        from core import get_bot
+
+        bot = get_bot()
+        if bot:
+            # Register new member handler
+            @bot.dp.message()
+            async def new_member_handler(message):
+                if message.new_chat_members:
+                    await handle_new_member(bot, message)
+
+            # Register left member handler
+            @bot.dp.message()
+            async def left_member_handler(message):
+                if message.left_chat_member:
+                    await handle_left_member(bot, message)
+
+            logging.info("Loaded member events handlers")
+            loaded_count += 1
+    except Exception as e:
+        logging.error(f"Error loading member events: {e}")
+
     logging.info(f"Loaded {loaded_count} event modules")
     return loaded_count
 
