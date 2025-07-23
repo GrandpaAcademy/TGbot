@@ -1,0 +1,49 @@
+{
+    "token": "7722306634:AAF-iBzS2zBUPp21hu4hu_bQBnEAYVfhT2Q",
+    "bot_name": "KOMI HUB 2",
+    "version": "3.0.0",
+    "database": "bot.db",
+    "log_level": "INFO",
+    "debug": false,
+
+    "admins": [
+        1234567890
+    ],
+
+    "rate_limit": {
+        "enabled": true,
+        "max_requests": 5,
+        "window_seconds": 60
+    },
+
+    "features": {
+        "welcome_messages": true,
+        "admin_commands": true,
+        "group_management": true,
+        "hot_reload": true,
+        "user_tracking": true,
+        "ban_system": true,
+        "callback_handlers": true
+    },
+
+    "messages": {
+        "welcome_enabled": true,
+        "goodbye_enabled": false,
+        "rules_enabled": true
+    },
+
+    "channels": {
+        "support": "@YourSupportChannel",
+        "updates": "@YourUpdatesChannel",
+        "logs": null
+    },
+
+    "security": {
+        "anti_spam": true,
+        "rate_limiting": true,
+        "admin_only_commands": [
+            "ban", "unban", "addadmin", "removeadmin",
+            "stats", "reload", "broadcast"
+        ]
+    }
+}
