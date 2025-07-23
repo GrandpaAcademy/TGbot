@@ -23,6 +23,9 @@ from .translator import (
     keyboard, CommandHandler, handler,
     send_message, register_command, load_command_module
 )
+from .force_join import (
+    check_force_join, is_force_join_enabled, get_force_channels, force_join
+)
 
 __all__ = [
     # Database
@@ -50,5 +53,8 @@ __all__ = [
     # Simple Translator
     'SimpleBot', 'create_bot', 'get_bot', 'Event',
     'keyboard', 'CommandHandler', 'handler',
-    'send_message', 'register_command', 'load_command_module'
+    'send_message', 'register_command', 'load_command_module',
+
+    # Force Join
+    'check_force_join', 'is_force_join_enabled', 'get_force_channels', 'force_join'
 ]

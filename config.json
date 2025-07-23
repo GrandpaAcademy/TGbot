@@ -1,13 +1,13 @@
 {
-    "token": "7722306634:AAF-iBzS2zBUPp21hu4hu_bQBnEAYVfhT2Q",
-    "bot_name": "KOMI HUB 2",
-    "version": "3.0.0",
+    "token": "6477272802:AAFKNuabThXHacYrp_s1WdRFWN6PzFNZL6A",
+    "bot_name": "Grandpa™ ORG",
+    "version": "1.0.0",
     "database": "bot.db",
     "log_level": "INFO",
     "debug": false,
 
     "admins": [
-        1234567890
+        6122160777
     ],
 
     "rate_limit": {
@@ -31,10 +31,12 @@
         "goodbye_enabled": false,
         "rules_enabled": true
     },
-
+    "force": {
+        "support": "@Grandpa_Bot_Support"
+    },
     "channels": {
-        "support": "@YourSupportChannel",
-        "updates": "@YourUpdatesChannel",
+        "support": "@Grandpa_Bot_Support",
+        "updates": "@Grandpa_Academy",
         "logs": null
     },
 

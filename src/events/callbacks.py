@@ -1,4 +1,5 @@
 from core import get_bot, keyboard
+from core.force_join import force_join
 
 def register_events(dp):
     """Register callback events with simple syntax"""
@@ -131,3 +132,55 @@ Thanks for using KOMI HUB 2! 🚀
     async def close_menu_callback(bot_instance, callback):
         """Close menu callback"""
         await callback.message.delete()
+
+    @bot.callback("check_membership")
+    async def check_membership_callback(bot_instance, callback):
+        """Check force join membership callback"""
+        user = callback.from_user
+
+        if not user:
+            await callback.answer("❌ Unable to verify membership")
+            return
+
+        # Check membership status
+        is_member, not_joined = await force_join.check_user_membership(bot_instance, user.id)
+
+        if is_member:
+            # User has joined all required channels
+            force_join.mark_user_checked(user.id)
+
+            success_text = """
+✅ <b>Membership Verified!</b>
+
+Great! You've successfully joined all required channels.
+You can now use all bot features!
+
+<b>🚀 Available Commands:</b>
+• /start - Welcome message
+• /help - Show all commands
+• /uid - Get your information
+
+Thanks for joining our community! 🎉
+            """
+
+            buttons = [
+                [{"text": "🏠 Start Bot", "callback_data": "back_start"}],
+                [{"text": "📋 Commands", "callback_data": "help_menu"}]
+            ]
+
+            kb = keyboard(buttons)
+            await callback.message.edit_text(success_text.strip(), reply_markup=kb)
+
+        else:
+            # User still needs to join some channels
+            message_text, buttons = await force_join.get_force_join_message(not_joined)
+            kb = keyboard(buttons)
+
+            await callback.message.edit_text(
+                f"❌ <b>Please join all required channels first!</b>\n\n{message_text}",
+                reply_markup=kb
+            )
+
+        await callback.answer(
+            "✅ Membership verified!" if is_member else "❌ Please join all channels first"
+        )

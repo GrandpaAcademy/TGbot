@@ -14,6 +14,7 @@ from aiogram.enums import ParseMode
 
 from .database import db
 from .permissions import is_admin, is_banned, add_admin
+from .force_join import check_force_join
 
 logger = logging.getLogger(__name__)
 
@@ -48,24 +49,32 @@ class SimpleBot:
                 user = message.from_user
                 if user:
                     db.add_user(user.id, user.username, user.first_name, user.last_name)
-                
+
                 # Check if banned
                 if user and is_banned(user.id):
                     await message.reply("❌ You are banned from using this bot.")
                     return
-                
+
+                # Check force join requirement
+                event = Event(message)
+                allowed, force_text, force_buttons = await check_force_join(self, event)
+                if not allowed:
+                    kb = keyboard(force_buttons) if force_buttons else None
+                    await message.reply(force_text, reply_markup=kb)
+                    return
+
                 # Check admin requirement
                 if admin_only and not is_admin(user.id):
                     await message.reply("❌ This command is for admins only.")
                     return
-                
+
                 # Execute command
                 try:
                     await func(self, message)
                 except Exception as e:
                     logger.error(f"Error in command {name}: {e}")
                     await message.reply("❌ An error occurred.")
-            
+
             # Register with aiogram
             self.router.message.register(handler, Command(commands=[name]))
             logger.info(f"Command '{name}' registered")

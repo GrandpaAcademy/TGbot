@@ -55,6 +55,13 @@ class Database:
                     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             ''')
+
+            # Add force_join_passed column if it doesn't exist
+            try:
+                cursor.execute('ALTER TABLE users ADD COLUMN force_join_passed INTEGER DEFAULT 0')
+            except sqlite3.OperationalError:
+                # Column already exists
+                pass
             
             conn.commit()
             conn.close()
