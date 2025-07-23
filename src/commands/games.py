@@ -212,10 +212,10 @@ def create_guess_game_image(attempts, hints, target_range=(1, 100), game_over=Fa
 
     # Try to load fonts
     try:
-        title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 32)
-        subtitle_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
-        text_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
-        hint_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 20)
+        title_font = ImageFont.truetype("./assets/fonts/DejaVuSans-Bold.ttf", 32)
+        subtitle_font = ImageFont.truetype("./assets/fonts/DejaVuSans-Bold.ttf", 24)
+        text_font = ImageFont.truetype("./assets/fonts/DejaVuSans.ttf", 18)
+        hint_font = ImageFont.truetype("./assets/fonts/DejaVuSans-Bold.ttf", 20)
     except:
         title_font = ImageFont.load_default()
         subtitle_font = ImageFont.load_default()
@@ -349,8 +349,8 @@ async def rock_paper_scissors_command(bot, event):
 
     # Try to load fonts
     try:
-        title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 28)
-        text_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
+        title_font = ImageFont.truetype("./assets/fonts/DejaVuSans-Bold.ttf", 28)
+        text_font = ImageFont.truetype("./assets/fonts/DejaVuSans.ttf", 18)
     except:
         title_font = ImageFont.load_default()
         text_font = ImageFont.load_default()

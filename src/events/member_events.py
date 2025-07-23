@@ -53,10 +53,10 @@ def create_welcome_card(user_name, user_username, chat_title, member_count, prof
     
     # Try to load fonts (fallback to default if not available)
     try:
-        title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 36)
-        name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 28)
-        subtitle_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
-        badge_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 16)
+        title_font = ImageFont.truetype("./assets/fonts/DejaVuSans-Bold.ttf", 36)
+        name_font = ImageFont.truetype("./assets/fonts/DejaVuSans-Bold.ttf", 28)
+        subtitle_font = ImageFont.truetype("./assets/fonts/DejaVuSans.ttf", 18)
+        badge_font = ImageFont.truetype("./assets/fonts/DejaVuSans-Bold.ttf", 16)
     except:
         title_font = ImageFont.load_default()
         name_font = ImageFont.load_default()
@@ -167,10 +167,10 @@ def create_goodbye_card(user_name, user_username, chat_title, member_count):
     
     # Try to load fonts
     try:
-        title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 32)
-        name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
-        subtitle_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 16)
-        badge_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 14)
+        title_font = ImageFont.truetype("./assets/fonts/DejaVuSans-Bold.ttf", 32)
+        name_font = ImageFont.truetype("./assets/fonts/DejaVuSans-Bold.ttf", 24)
+        subtitle_font = ImageFont.truetype("./assets/fonts/DejaVuSans.ttf", 16)
+        badge_font = ImageFont.truetype("./assets/fonts/DejaVuSans-Bold.ttf", 14)
     except:
         title_font = ImageFont.load_default()
         name_font = ImageFont.load_default()
