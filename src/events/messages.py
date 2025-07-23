@@ -194,18 +194,39 @@ async def handle_text_message(message, user, chat_id):
     """Handle non-numeric text messages"""
     try:
         logging.info(f"Handling text message: '{message.text}'")
-        
-        # Simple echo response for testing
-        if message.text.lower() in ['hello', 'hi', 'hey']:
+
+        # Only respond to specific messages, don't echo everything
+        text = message.text.lower().strip()
+
+        # Greetings
+        if text in ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening']:
             await message.reply(f"Hello {user.first_name}! 👋")
-        elif message.text.lower() in ['how are you', 'how are you?']:
+
+        # How are you
+        elif text in ['how are you', 'how are you?', 'how r u', 'how r u?']:
             await message.reply("I'm doing great! Thanks for asking! 😊")
-        elif message.text.lower() in ['test', 'testing']:
+
+        # Testing
+        elif text in ['test', 'testing', 'ping']:
             await message.reply("✅ Bot is working perfectly!")
+
+        # Help requests
+        elif text in ['help', 'commands', 'what can you do', 'what can you do?']:
+            await message.reply("🎮 Try these commands:\n/guess - Number guessing game\n/ttt - Tic-tac-toe\n/rps - Rock paper scissors\n/help - Show help menu")
+
+        # Thanks
+        elif text in ['thanks', 'thank you', 'thx']:
+            await message.reply("You're welcome! 😊")
+
+        # Goodbye
+        elif text in ['bye', 'goodbye', 'see you', 'see ya']:
+            await message.reply("Goodbye! See you later! 👋")
+
+        # Otherwise, don't respond (let commands and other handlers work)
         else:
-            # Echo the message back
-            await message.reply(f"You said: {message.text}")
-            
+            # Just log it, don't echo back
+            logging.info(f"No specific response for: '{message.text}'")
+
     except Exception as e:
         logging.error(f"Error in text message handler: {e}")
         import traceback
