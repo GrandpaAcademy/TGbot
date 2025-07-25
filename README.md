@@ -1,4 +1,4 @@
-# 🤖 TGbot - Simple Telegram Bot
+# 🤖 KOMI HUB 2 - Simple Telegram Bot
 
 **Clean, readable code with super simple syntax!**
 
@@ -10,34 +10,6 @@
 - **Modern Backend** - Powered by aiogram 3.x
 - **User Management** - Built-in database and permissions
 - **Hot Reload** - Update code without restarting
-
-## 📦 Installation
-
-<b>For termux </b>
-```bash
-git clone https://github.com/tgbot/komi-hub.git
-cd komi-hub
-pip install -r requirements.txt
-python bot.py
-```
-<b>For windows</b>
-```bash
-git clone https://github.com/tgbot/komi-hub.git
-cd komi-hub
-python -m venv venv
-.\venv\Scripts\activate
-pip install -r requirements.txt
-python bot.py
-```
-<b> For linux</b>
-```bash
-git clone https://github.com/tgbot/komi-hub.git
-cd komi-hub
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python bot.py
-```
 
 ## 📁 Project Structure
 
@@ -117,7 +89,7 @@ Edit `config.json`:
 ```json
 {
     "token": "YOUR_BOT_TOKEN_HERE",
-    "bot_name": "Grandpa™ ORG",
+    "bot_name": "KOMI HUB 2",
     "admins": [1234567890],
     "features": {
         "welcome_messages": true,
@@ -127,13 +99,6 @@ Edit `config.json`:
 }
 ```
 
-## 🔧 Command Structure
-
-===================================
-
-<b> [READ DOCS]("./COMMAND_STRUCTURE.md") </b>
-
-===================================
 ## 🚀 Quick Start
 
 1. **Install dependencies:**
